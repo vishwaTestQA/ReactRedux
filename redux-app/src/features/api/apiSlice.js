@@ -29,7 +29,7 @@ export const apiSlice = createApi({
         }),
         deleteTodo: builder.mutation({
           query:({id}) => ({
-            url: `/todos/${todo.id}`,
+            url: `/todos/${id}`,
             method: 'DELETE',
             body: id
           }),
