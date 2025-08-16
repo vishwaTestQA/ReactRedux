@@ -57,13 +57,15 @@ const UserPage = () => {
   //                </section>
   //   })
 
-    if(isSuccess) {
+    if(isSuccess && postsForUser.length > 0) {
       const {ids, entities} = postsForUser
       content = ids.map(id=>(
         <li key={id}>
           <Link to={`/post/${id}`}>{entities[id].title}</Link>
         </li>
       ))
+    }else{
+      content = <p>No posts found for this user</p>
     }
 
     if(isError) content = <p>{error}</p>

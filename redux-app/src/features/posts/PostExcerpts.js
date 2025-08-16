@@ -10,12 +10,13 @@ import ReactionButton from './ReactionButton';
 
   const PostExcerpts = ({postId}) => {
 
+    console.log('postID====='+ postId)
     // const postIds = useSelector(selectPostIds);
     const allPost = useSelector(selectAllPosts);
 
     const post = allPost.find(post => post.id === postId)
 
-    console.log(post);
+    console.log("PostExcerption ", post);
 
   return (
       <div>
@@ -28,7 +29,7 @@ import ReactionButton from './ReactionButton';
               <PostAuthor key={post?.id} postId={post?.userId}/> 
               <TimeAgo timestamp={post?.date}/>
             </p>
-            <ReactionButton key={post?.id} postId={post.id}/>
+            <ReactionButton key={post?.id} postId={post?.id}/>
     </div>
   )
 }

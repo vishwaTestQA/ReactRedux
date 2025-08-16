@@ -7,7 +7,9 @@ const ReactionButton = ({postId}) => {
 const [addReaction] = useAddReactionMutation();
 
   const allPost = useSelector(selectAllPosts);
-  const post = allPost.find(post => post.id === Number(postId))
+  console.log("InReactionButtonComp  ", allPost, "====", postId)
+  const post = allPost.find(post => post.id === postId)
+  console.log("InReaction=post ", post)
   
    const reactions={
     thumbsUp: '👍',
@@ -18,14 +20,15 @@ const [addReaction] = useAddReactionMutation();
   }
 
 const clickEmoji = (name) => {
-  const newValue =  post.reactions[name]+1;
+  const newValue =  post?.reactions[name]+1;
+  console.log("postIdInAddReactionComp ", postId)
   addReaction({postId, reactions: {...post.reactions, [name]:newValue}});
 }
 
   const reactEmoji = Object.entries(reactions).map(([name, emoji])=>{
       return <>
       <button key={name} 
-              onClick={() => clickEmoji(name)}>
+              onClick ={() => clickEmoji(name)}>
         {emoji} {post?.reactions?.[name]}
       </button>
       {/* <span>{}</span> */}

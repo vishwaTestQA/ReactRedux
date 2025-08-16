@@ -23,14 +23,21 @@ const PostList = () => {
 
   
   const orderedPosts = useSelector(selectPostIds)
-
+  console.log("ordered",orderedPosts)
   let content;
 
-  if(isLoading) return <div>Loding......</div>
+  if(isLoading) return <div>Loading......</div>
 
-  if(isError) content = <p>{error}</p>
+  //becz rtk query returns object as an error and n ot an string
+  if(isError) content = <p>{error?.message || JSON.stringify(error)}</p>
 
-  if(isSuccess) content = orderedPosts.map(postId => <PostExcerpts key={postId} postId={postId}/>)
+  // if(isSuccess) content = orderedPosts.map(postId => <PostExcerpts key={postId} postId={postId}/>)
+  if(isSuccess && orderedPosts.length > 0) {
+  content = orderedPosts.map(postId => <PostExcerpts key={postId} postId={postId}/>)
+} else if(isSuccess) {
+  content = <p>No posts found.</p>
+}
+
 
 return (
 <div>

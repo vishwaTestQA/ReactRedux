@@ -6,11 +6,16 @@ import UserPage from "./features/Users/UserPage";
 import { UsersList } from "./features/Users/UsersList";
 import AddPosts from "./features/posts/AddPost";
 import { SinglePost } from "./features/posts/SinglePost";
+// import { LoginPage } from "./features/components/LoginPage";
 
 function App() {
+
   return (
      <Routes>
+      {/* <Route index element={<LoginPage/>}/> */}
+
       <Route path='/' element={<Layout/>}>
+
          <Route index element={<PostList/>}/>
 
          <Route path="post">
@@ -28,7 +33,8 @@ function App() {
      <Route path="*" element={Navigate('/')}/>
 
       </Route>
-  
+
+      
      </Routes>
   );
 }
