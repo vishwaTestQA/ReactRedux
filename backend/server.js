@@ -4,8 +4,15 @@ import cors from 'cors';
 import authRouter from './routes/auth.js';
 import connectDB from './config.js/dbConn.js';
 import dotenv from 'dotenv';
+
+// const express = require('express');
+// const cookieParser = require('cookie-parser');
+// const cors = require('cors');
+// const authRouter = require('./routes/auth');
+// const connectDB = require('./config.js/dbConn');
+// const dotenv = require('dotenv');
 dotenv.config();
-const PORT = process.env.PORT
+const PORT = process.env.PORT || 3500
 
 const app = express();
 
@@ -17,9 +24,20 @@ app.use(cors({
     credentials: true // This allows cookies to be sent with requests
 }));
 
-app.use('/api/auth', authRouter);    
+app.use('/auth', authRouter);    
 
-connectDB()
+// connectDBS()
+
+const connectDBS = async () => {
+    try { 
+        await connectDB();
+        console.log("Database connected successfully");
+    } catch (error) {
+        console.error("Database connection failed:", error);   
+        process.exit(1); // Exit the process with failure
+    }
+};
+connectDBS();
 
 const expServer = app.listen(PORT, () => {
     console.log(`Express server is running on port ${PORT}`);

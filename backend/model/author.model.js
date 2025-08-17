@@ -6,7 +6,7 @@ const authorSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true, // Removes whitespace from both ends of the string
-        minlength: 5, // Minimum length for username
+        minlength: 3, // Minimum length for username
         maxLength: 20, // Maximum length for username
         match: /^[a-zA-Z0-9]+$/, // Regex to allow only alphanumeric characters
     },
@@ -39,7 +39,7 @@ const authorSchema = new mongoose.Schema({
   versionKey: false // This will remove the __v field
   });
 
-  userSchema.method.toJSON = function() {
+  authorSchema.method.toJSON = function() {
     const userObject = this.toObject();
     delete userObject.password; // Exclude password from the JSON representation
     return userObject;
@@ -50,7 +50,7 @@ const authorSchema = new mongoose.Schema({
     return regex.test(username);
   }
 
-  userSchema.methods.validateUsername = function() {
+  authorSchema.methods.validateUsername = function() {
     return validateUsername(this.username);
     }
 
@@ -72,7 +72,7 @@ const authorSchema = new mongoose.Schema({
     next();
     });
 
-    userSchema.pre('updateOne', function(next) {
+    authorSchema.pre('updateOne', function(next) {
     const update = this.getUpdate();    
     if (update && update.username && !validateUsername(update.username)) {
         return next(new Error('Username can only contain alphanumeric characters.'));
@@ -80,7 +80,7 @@ const authorSchema = new mongoose.Schema({
     next();
     });
 
-    userSchema.pre('findOneAndReplace', function(next) {
+    authorSchema.pre('findOneAndReplace', function(next) {
     const replacement = this.getReplacement();
     if (replacement && replacement.username && !validateUsername(replacement.username)) {
         return next(new Error('Username can only contain alphanumeric characters.'));
@@ -88,7 +88,7 @@ const authorSchema = new mongoose.Schema({
     next();
     }); 
 
-    userSchema.pre('replaceOne', function(next) {
+    authorSchema.pre('replaceOne', function(next) {
     const replacement = this.getReplacement();
     if (replacement && replacement.username && !validateUsername(replacement.username)) {
         return next(new Error('Username can only contain alphanumeric characters.'));
@@ -96,7 +96,7 @@ const authorSchema = new mongoose.Schema({
     next();
     });
 
-    userSchema.pre('insertMany', function(next) {
+    authorSchema.pre('insertMany', function(next) {
     const users = this.getDocuments();
     for (const user of users) {
         if (!validateUsername(user.username)) {
@@ -108,4 +108,4 @@ const authorSchema = new mongoose.Schema({
 
     
 
-const Author = mongoose.model('User', authorSchema);
+export const Author = mongoose.model('Author', authorSchema);
