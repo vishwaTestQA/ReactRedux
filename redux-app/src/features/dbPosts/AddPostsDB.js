@@ -36,9 +36,9 @@ const AddPostsDB = () => {
     }
   }
 
-  const userOptions = users.flat().map(user=>{
-    return <option key={user.id} value={user.id}>{user.name}</option>
-  })
+  // const userOptions = users.flat().map(user=>{
+  //   return <option key={user.id} value={user.id}>{user.name}</option>
+  // })
 
   return (
      <div>

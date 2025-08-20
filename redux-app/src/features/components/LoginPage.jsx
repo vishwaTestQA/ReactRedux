@@ -10,16 +10,20 @@ export const LoginPage = () => {
 
   const[username, setUsername] = useState('');
   const[password, setPassword] = useState('');
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, {isLoading}] = useLoginMutation();
   const  handleSubmit = async (e) => {
     e.preventDefault();
       try{
         const userData = await login({username, password}).unwrap();   //to get the token from server
-        // dispatch(setCredentials({...userData}))     //for state in react
+              dispatch(setCredentials({
+                   user:  userData.user.username,
+                   token: userData.accessToken,
+                   roles: userData.user.roles // Assuming roles are part of the user object
+            })) 
         console.log("user logged in successfully:", userData);
-        navigate('/home');  //redirect to home page
+        navigate('/');  //redirect to home page
       }catch(err){
         console.error('Login failed:', err);
       }

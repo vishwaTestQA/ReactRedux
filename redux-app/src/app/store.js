@@ -1,15 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { apiSliceForPost } from "../features/api/apiSliceForPost";
-import usersReducer from "../features/Users/usersSlice"
+import usersReducer from "../features/dbUsers/usersSliceDB"
 import { apiAuthSlice } from "../features/api/auth/apiAuthSlice";
 import authReducer from "../features/api/auth/authSlice";
 
 
 export const store = configureStore({
   reducer:{
-    // [apiSliceForPost.reducerPath]: apiSliceForPost.reducer,
+    [apiSliceForPost.reducerPath]: apiSliceForPost.reducer,
     // We can add more reducers here, for example:
-    // users: usersReducer
+    // users: usersReducer,
 
     [apiAuthSlice.reducerPath]: apiAuthSlice.reducer,
     auth: authReducer     // This makes getState().auth available in the prepareHeaders function
@@ -19,7 +19,7 @@ export const store = configureStore({
 
   middleware: getDefaultMiddleware =>
         getDefaultMiddleware()
-                //  .concat(apiSliceForPost.middleware)
+                 .concat(apiSliceForPost.middleware)
                  .concat(apiAuthSlice.middleware),
   // Enable the Redux DevTools Extension
   devTools: true

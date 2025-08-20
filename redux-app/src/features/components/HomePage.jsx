@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { selectCurrentToken, selectCurrentUser } from '../api/auth/authSlice';
+import { Link } from 'react-router-dom';
 
 export const HomePage = () => {
-    
+    // console.log(check);
   const user123 = useSelector(selectCurrentUser);
   const token = useSelector(selectCurrentToken);
   const roles = useSelector(state => state.auth.roles);
@@ -15,7 +16,9 @@ export const HomePage = () => {
   },[])
 
   return (
-    <div>HomePage</div>
+    <div>
+      <Link to='/users'>Users</Link>
+    </div>
   )
 }
 

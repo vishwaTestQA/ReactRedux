@@ -3,7 +3,6 @@ import { Layout } from "./features/components/Layout";
 import PostList from "./features/posts/PostList";
 import { EditPost } from "./features/posts/EditPost";
 import UserPage from "./features/Users/UserPage";
-import { UsersList } from "./features/Users/UsersList";
 import AddPosts from "./features/posts/AddPost";
 import { SinglePost } from "./features/posts/SinglePost";
 import Register from "./features/components/Register";
@@ -11,6 +10,9 @@ import { HomePage } from "./features/components/HomePage";
 import { useSelector } from "react-redux";
 import { LoginPage } from "./features/components/LoginPage";
 import RequireAuth from "./features/components/RequireAuth";
+import {UserList} from './features/dbUsers/userListDB'
+import UserPageDB from "./features/dbUsers/UserPageDB";
+import AddPostsDB from "./features/dbPosts/AddPostsDB";
 // import { LoginPage } from "./features/components/LoginPage";
 
 function App() {
@@ -19,20 +21,21 @@ function App() {
   return (
      <Routes>
       {/* <Route index element={<LoginPage/>}/> */}
-
-      {/* <Route path='/' element={<Layout/>}> */}
-        <Route path = '/login' element={<LoginPage/>}/>
+  <Route path = '/login' element={<LoginPage/>}/>
         <Route path="/register" element={<Register/>}/>
+      <Route path='/' element={<Layout/>}>
         <Route element={<RequireAuth/>}>
         <Route index element={<HomePage/>}/> 
+        <Route path="/users" element={<UserList/>}/>
+        <Route path="/users/:userId" element={<UserPageDB/>}/>
        </Route>
          {/* <Route index element={<PostList/>}/> */}
-{/* 
+
          <Route path="post">
-          <Route index element={<AddPosts/>}/>
-          <Route path=":postId" element={<SinglePost/>}/>
-          <Route path="edit/:postId" element={<EditPost/>}/>
-         </Route> */}
+          <Route index element={<AddPostsDB/>}/>
+          {/* <Route path=":postId" element={<SinglePost/>}/> */}
+          {/* <Route path="edit/:postId" element={<EditPost/>}/> */}
+         </Route>
 
        {/* <Route path='users'>
        <Route index element = {<UsersList/>}/>
@@ -42,7 +45,7 @@ function App() {
      {/* <Route path="*" element={<div>missing page - 404</div>}/> */}
      <Route path="*" element={Navigate('/')}/>
 
-      {/* </Route> */}
+      </Route>
 
       
      </Routes>
