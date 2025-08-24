@@ -5,6 +5,7 @@ import authRouter from './routes/auth.js';
 import connectDB from './config.js/dbConn.js';
 import dotenv from 'dotenv';
 import userRouter from './routes/users.js';
+import postRouter from './routes/post.js';
 
 // const express = require('express');
 // const cookieParser = require('cookie-parser');
@@ -27,6 +28,8 @@ app.use(cors({
 
 app.use('/auth', authRouter);    
 app.use('/users', userRouter);    
+app.use('/post', postRouter);        
+
 
 // connectDBS()
 
@@ -40,7 +43,7 @@ const connectDBS = async () => {
     }
 };
 connectDBS();
-
+console.log("accessed?  ==== ")
 const expServer = app.listen(PORT, () => {
     console.log(`Express server is running on port ${PORT}`);
 });

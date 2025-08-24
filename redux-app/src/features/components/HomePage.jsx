@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import { selectCurrentToken, selectCurrentUser } from '../api/auth/authSlice';
 import { Link } from 'react-router-dom';
+import PostListDB from '../dbPosts/PostListDB';
 
 export const HomePage = () => {
     // console.log(check);
@@ -15,9 +16,12 @@ export const HomePage = () => {
     console.log("Roles in HomePage: ", roles);
   },[])
 
+
   return (
     <div>
-      <Link to='/users'>Users</Link>
+      {/* <Link to='/users'>Users</Link> */}
+       <PostListDB/>
+      {/* <Link to='/users'>AllPosts</Link> */}
     </div>
   )
 }

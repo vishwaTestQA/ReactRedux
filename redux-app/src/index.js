@@ -10,6 +10,7 @@ import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { extendedUserSlice } from './features/Users/usersSlice';
 import { extendedApiSliceDB } from './features/dbUsers/usersSliceDB';
+import { extendedApiSlicePostDB } from './features/dbPosts/postSliceDB';
 
 // store.dispatch(extendedApiSlice.endpoints.getAllPosts.initiate()); // this is to prefetch the data when the app loads
 // store.dispatch(extendedUserSlice.endpoints.getUsers.initiate());  
@@ -23,6 +24,7 @@ import { extendedApiSliceDB } from './features/dbUsers/usersSliceDB';
 // store.dispatch(extendedUserSlice.endpoints.getUserById.initiate()); // this is to prefetch the user data when the app loads
 // store.dispatch(apiSlice.endpoints.getTodos.initiate()); // this is to prefetch the
 
+store.dispatch(extendedApiSlicePostDB.endpoints.getAllPosts.initiate());
 store.dispatch(extendedApiSliceDB.endpoints.getAllUsers.initiate())
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

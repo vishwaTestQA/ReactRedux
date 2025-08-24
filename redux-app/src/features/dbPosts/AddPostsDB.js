@@ -1,35 +1,40 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import PostList from './PostList';
+// import PostList from './PostList';
 import { useAddNewPostMutation } from './postSliceDB';
+import { selectAllUsers } from '../dbUsers/usersSliceDB';
+import { selectCurrentId, selectCurrentRoles } from '../api/auth/authSlice';
 
 const AddPostsDB = () => {
 
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [authorId, setAuthorId] = useState('');
+  // const [authorId, setAuthorId] = useState('');
 
   const onContentChanged = (e) => setContent(e.target.value);
   const onTitleChanged = (e)=> setTitle(e.target.value);
-  const onAuthorIdChanged = (e)=> setAuthorId(e.target.value);
+  // const onAuthorIdChanged = (e)=> setAuthorId(e.target.value);
 
   // const dispatch = useDispatch();
   const [addNewPost, {isLoading}] = useAddNewPostMutation();
   const navigate = useNavigate();
 
-  const users = useSelector(selectAllUsers);
+  const userId = useSelector(selectCurrentId);
+  console.log("id", userId)
 
-  const canSave = [title, authorId, content].every(Boolean) && !isLoading;
+  const canSave = [title, userId, content].every(Boolean) && !isLoading;
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
     if(canSave){
       try{
           // dispatch(addNewPost({title, body: content, author})).unwrap();
-        await addNewPost({title, body: content, authorId}).unwrap();
+        addNewPost({title, content, userId}).unwrap();
+        // console.log("after adding post", resp)
         navigate('/');
+        console.log(title, userId, content)
       }catch(error){
         console.log(error.message)
       }
@@ -51,20 +56,15 @@ const AddPostsDB = () => {
                onChange={onTitleChanged}  
                  />
 
-<label htmlFor='author'>
+{/* <label htmlFor='author'>
         Author</label>
-        {/* <input type="text"
-               id='author'
-               value={author}
-               onChange={onAuthorChanged}  
-                 /> */}
             <select type="text"
                id='author'
                value={authorId}
                onChange={onAuthorIdChanged}>
                 <option value=''>select username</option>
                 {userOptions}
-                </select>
+                </select> */}
 
 
 <label htmlFor='content'>
@@ -76,7 +76,7 @@ const AddPostsDB = () => {
                  />
                  <button disabled={!canSave}>submit</button>
       </form>
-     <PostList/>   
+     {/* <PostList/>    */}
      {/* displays all the posts in the same page */}
      </div>
   )

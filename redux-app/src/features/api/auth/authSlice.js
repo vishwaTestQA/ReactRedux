@@ -5,18 +5,22 @@ const authSlice = createSlice({
     initialState: {
          user: null,
          token: null,
-         roles: [] // Assuming roles are part of the payload
+         roles: [],// Assuming roles are part of the payload
+         id: null,
     },
      reducers:{
         setCredentials: (state, action) => {
-            const {user, roles, token} = action.payload;
+            const {user, roles, token, id} = action.payload;
             state.user = user;
             state.token = token;
             state.roles = roles; // Assuming roles are part of the payload
+            state.id = id;
         },
         logout: (state) => {  
             state.user = null;
             state.token = null;
+            state.roles = null;
+            state.id = null
         }
      }
     });
@@ -27,3 +31,4 @@ const authSlice = createSlice({
     export const selectCurrentUser = (state) => state.auth.user;
     export const selectCurrentToken = (state) => state.auth.token;
     export const selectCurrentRoles = (state) => state.auth.roles;
+    export const selectCurrentId = (state) => state.auth.id;

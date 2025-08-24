@@ -20,7 +20,8 @@ export const LoginPage = () => {
               dispatch(setCredentials({
                    user:  userData.user.username,
                    token: userData.accessToken,
-                   roles: userData.user.roles // Assuming roles are part of the user object
+                   roles: userData.user.roles, // Assuming roles are part of the user object
+                   id: userData.user.id
             })) 
         console.log("user logged in successfully:", userData);
         navigate('/');  //redirect to home page

@@ -7,29 +7,29 @@ import { apiSliceForPost } from "../api/apiSliceForPost";
 // The createEntityAdapter function accepts an options object with two optional properties:
 // 1) selectID 2)sortComparer
 const postsAdapter = createEntityAdapter({
-    sortComparer: (a, b) => b.date.localeCompare(a.date),
+    // sortComparer: (a, b) => b.date.localeCompare(a.date),
     // selectId: (entity) => entity.uuid // if your entity uses `uuid` instead of `id`
     // (or)
-    //  selectId: (post) => post.postId,
+     selectId: (post) => post._id,
 })
 
 const initialState = postsAdapter.getInitialState()
 
-export const extendedApiSlice = apiSliceForPost.injectEndpoints({
+export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
     endpoints: builder => ({
         getAllPosts: builder.query({
-            query: () => '/posts',
+            query: () => '/post',
             transformResponse: responseData => {
-                let min = 1;
-                const loadedPosts = responseData.map(post => {
-                    if (!post?.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
-                    if (!post?.reactions) post.reactions = {
-                        thumbsUp: 0,
-                        wow: 0,
-                        heart: 0,
-                        rocket: 0,
-                        coffee: 0
-                    }
+                // let min = 1;
+                const loadedPosts = responseData.allPost.map(post => {
+                    // if (!post?.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
+                    // if (!post?.reactions) post.reactions = {
+                    //     thumbsUp: 0,
+                    //     wow: 0,
+                    //     heart: 0,
+                    //     rocket: 0,
+                    //     coffee: 0
+                    // }
                     return post;
                 });
                 return postsAdapter.setAll(initialState, loadedPosts)
@@ -38,6 +38,25 @@ export const extendedApiSlice = apiSliceForPost.injectEndpoints({
                 { type: 'Post', id: "LIST" },
                 ...result.ids.map(id => ({ type: 'Post', id }))
             ]
+        }),
+        getReactions: builder.query({
+           query: postId => `/posts/?postId=${postId}`,
+           transformResponse: response => {
+                const react = response.reactions.map(re => {
+                    if(!re){
+                        return re.reactions = {
+                        like: 0,
+                        dislike: 0,
+                        love: 0,
+                        laugh: 0,
+                        sad: 0,
+                        angry: 0, 
+                        }
+                    } else{
+                       return postsAdapter.setAll(initialState, react)
+                    }
+             })
+           }
         }),
         getPostsByUserId: builder.query({
             query: id => `/posts/?userId=${id}`,
@@ -62,13 +81,14 @@ export const extendedApiSlice = apiSliceForPost.injectEndpoints({
         }),
         addNewPost: builder.mutation({
             query: initialPost => ({
-                url: '/posts',
+                url: '/post',
                 method: 'POST',
                 body: {
                     ...initialPost,
-                    userId: Number(initialPost.userId),
-                    date: new Date().toISOString(),
-                    // reactions: {
+                    // authorId: Number(initialPost.userId),
+                    authorId: initialPost.userId,
+                    // date: new Date().toISOString(),  lets mongoose handle it in backend
+                    // reactions: {         //seperate model for reactions are recom
                     //     thumbsUp: 0,
                     //     wow: 0,
                     //     heart: 0,
@@ -127,7 +147,7 @@ export const extendedApiSlice = apiSliceForPost.injectEndpoints({
                 // so it knows which piece of cache state to update
                 const patchResult = dispatch(
                     // updateQueryData takes three arguments: the name of the endpoint to update, the same cache key value used to identify the specific cached data, and a callback that updates the cached data.
-                    extendedApiSlice.util.updateQueryData('getAllPosts', undefined, draft => {
+                    extendedApiSlicePostDB.util.updateQueryData('getAllPosts', undefined, draft => {
                         // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
                         const post = draft.entities[postId]
                         if (post) post.reactions = reactions
@@ -144,7 +164,7 @@ export const extendedApiSlice = apiSliceForPost.injectEndpoints({
 })
 
 //returns the query result object
-export const selectPostResult = extendedApiSlice.endpoints.getAllPosts.select();
+export const selectPostResult = extendedApiSlicePostDB.endpoints.getAllPosts.select();
 
 //create memoized selector
 const selectPostsData = createSelector(
@@ -157,6 +177,7 @@ export const{
   selectById: selectPostById,
   selectIds: selectPostIds
 } = postsAdapter.getSelectors(state => selectPostsData(state) ?? initialState)
+//These selectors will work with the client cache
 
 export const {
     useGetAllPostsQuery,
@@ -165,4 +186,5 @@ export const {
     useUpdatePostMutation,
     useDeletePostMutation,
     useAddReactionMutation
-} = extendedApiSlice
+} = extendedApiSlicePostDB        //These auto gen hooks will interact with server 
+                                  // and update the client cache throuh createEntityAdaptor
