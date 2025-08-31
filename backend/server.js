@@ -6,6 +6,7 @@ import connectDB from './config.js/dbConn.js';
 import dotenv from 'dotenv';
 import userRouter from './routes/users.js';
 import postRouter from './routes/post.js';
+// import reactionRouter from './routes/reactions.js';
 
 // const express = require('express');
 // const cookieParser = require('cookie-parser');
@@ -28,7 +29,8 @@ app.use(cors({
 
 app.use('/auth', authRouter);    
 app.use('/users', userRouter);    
-app.use('/post', postRouter);        
+app.use('/post', postRouter);    
+// app.use('/reaction', reactionRouter)    
 
 
 // connectDBS()

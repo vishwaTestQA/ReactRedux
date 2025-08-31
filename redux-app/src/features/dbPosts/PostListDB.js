@@ -16,18 +16,18 @@ const PostListDB = () => {
     
     const allPost = useSelector(selectAllPosts); // it selects the posts from cache
     
-    // console.log("getAllPost", post);
+    console.log("getAllPost", allPost);
 
     const renderPost = allPost.map(post => (
-        <div key={post.id}>
+        <div key={post._id}>
             <div>{post.title}</div>
             <div>{post.content}</div>
-            <ReactionsDB postId = {post.id}/>
+            <ReactionsDB postId = {post._id} reactions={post.reactions}/>
         </div>
     ))
   return (
     // <div>{JSON.stringify(post)}</div>
-    // <div>{JSON.stringify(allPost)}</div>
+    // <div>{JSON.stringify(allPost}</div>
    renderPost
   )
 }

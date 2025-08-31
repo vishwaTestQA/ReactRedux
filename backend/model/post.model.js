@@ -17,12 +17,22 @@ const postSchema = new mongoose.Schema({
         required: true  // Reference to the Author model
         },
 
-    reactions:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Reaction',
-    }
+    // reactions:[{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Reaction',
+    //     default: undefined,
+    // }]
 }, {
     timestamps: true
 })
+
+postSchema.virtual('reactions', {
+    ref: 'Reaction',
+    localField: '_id',
+    foreignField: 'postId'
+})
+
+postSchema.set('toobject', {virtuals: true})
+postSchema.set('toJSON', {virtuals: true})
 
 export const Post = mongoose.model('Post', postSchema);

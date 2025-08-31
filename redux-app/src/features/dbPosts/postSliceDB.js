@@ -30,21 +30,9 @@ export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
                     //     rocket: 0,
                     //     coffee: 0
                     // }
-                    return post;
-                });
-                return postsAdapter.setAll(initialState, loadedPosts)
-            },
-            providesTags: (result, error, arg) => [
-                { type: 'Post', id: "LIST" },
-                ...result.ids.map(id => ({ type: 'Post', id }))
-            ]
-        }),
-        getReactions: builder.query({
-           query: postId => `/posts/?postId=${postId}`,
-           transformResponse: response => {
-                const react = response.reactions.map(re => {
-                    if(!re){
-                        return re.reactions = {
+                    console.log("vsfsssdffgg", responseData.allPost);
+                     if(!post.reactions || post.reactions == 'undefined' || post.reactions.length<=0){
+                        post.reactions = {
                         like: 0,
                         dislike: 0,
                         love: 0,
@@ -52,12 +40,34 @@ export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
                         sad: 0,
                         angry: 0, 
                         }
-                    } else{
-                       return postsAdapter.setAll(initialState, react)
                     }
-             })
-           }
+                    return post;
+                });
+                return postsAdapter.setAll(initialState, loadedPosts)
+            },
+            providesTags: (result, error, arg) => [
+                { type: 'Post', id: "LIST" },                          //name given as List
+                ...result.ids.map(id => ({ type: 'Post', id }))
+            ]
         }),
+        addReaction: builder.mutation({
+           query: (reaction) => ({
+              url: `/post/addReactions`,
+              method: `POST`,
+              body: {
+                // postId,
+                // type,
+                // userId
+                ...reaction
+              }
+           }),
+             providesTags: (result, error, {postId}) => [
+                { type: 'Post', id: "LIST" },   
+                {type: 'Post', id: "postId"},                      //name given as List
+                ...result.ids.map(id => ({ type: 'Post', id }))
+            ]
+        }),
+
         getPostsByUserId: builder.query({
             query: id => `/posts/?userId=${id}`,
             transformResponse: responseData => {
@@ -126,7 +136,7 @@ export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
                 { type: 'Post', id: arg.id }
             ]
         }),
-        addReaction: builder.mutation({
+        addReactionxxxxxx: builder.mutation({
 
              //Sends a PATCH request to update the reactions for a specific post (postId) on the server.
        //The new reactions object is sent in the request body.

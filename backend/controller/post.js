@@ -32,7 +32,11 @@ export const post = async (req, res) => {
 
 export const getPosts = async (req, res) => {
     
-    const allPost = await Post.find()
+    // const allPost = await Post.find()
+    // const allPost = await Post.find({}).populate('reactions').exec()
+    const allPost = await Post.find({}).populate({path:'reactions', select:'type'}).exec()
+
+    console.log("alpost", allPost)
     res.status(200).json({
       allPost: allPost
     })
