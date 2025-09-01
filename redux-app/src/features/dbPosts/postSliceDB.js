@@ -31,16 +31,16 @@ export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
                     //     coffee: 0
                     // }
                     console.log("vsfsssdffgg", responseData.allPost);
-                     if(!post.reactions || post.reactions == 'undefined' || post.reactions.length<=0){
-                        post.reactions = {
-                        like: 0,
-                        dislike: 0,
-                        love: 0,
-                        laugh: 0,
-                        sad: 0,
-                        angry: 0, 
-                        }
-                    }
+                    //  if(!post.reactions || post.reactions == 'undefined' || post.reactions.length<=0){
+                    //     post.reactions = {
+                    //     like: 0,
+                    //     dislike: 0,
+                    //     love: 0,
+                    //     laugh: 0,
+                    //     sad: 0,
+                    //     angry: 0, 
+                    //     }
+                    // }
                     return post;
                 });
                 return postsAdapter.setAll(initialState, loadedPosts)
@@ -63,7 +63,7 @@ export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
            }),
              providesTags: (result, error, {postId}) => [
                 { type: 'Post', id: "LIST" },   
-                {type: 'Post', id: "postId"},                      //name given as List
+                {type: 'Post', id: postId},                      //name given as List
                 ...result.ids.map(id => ({ type: 'Post', id }))
             ]
         }),

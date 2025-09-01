@@ -18,16 +18,15 @@ const ReactionsDB = ({postId, reactions}) => {
       like: '👍🏻',
       dislike: '👎🏻',
       love:'❤️',
-       laugh:'😂',
-       sad:'😢',
-       angry:'😡'  
+      laugh:'😂',
+      sad:'😢',
+      angry:'😡'  
     }
 
     const handleReact = async (name, count) => {
       // setEmoji(emojis[name])
       setEmoji(name)
       setReact(!react)
-
       //cannot use here due to useState batch run
 //  const reactionResult = await addReactions({postId, currentUserId, type: emoji}).unwrap();
       // console.log(reactionResult);
@@ -58,14 +57,16 @@ const ReactionsDB = ({postId, reactions}) => {
         postReaction();
     },[react, emoji])
 
-    const reactPost = Object.entries(reactions)
+    console.log("reactions", reactions[0]?.type);
+    const reactPost = Object.entries(emojis)
                        .map(([name, count]) => 
                                 <button key={name} onClick={()=> handleReact(name, count)}>{emojis[name]}</button>)
     // reactions.map(({name, count}) => {
        
     // })<button>{ emoji ?? 'Like'}</button>
 
-    console.log(react)
+    const userReact = reactions?.filter(r => r.authorId === currentUserId)
+    console.log("user reaction", userReact[0]?.type);
   return (
     // style={{display:'flex'}}
     <div >
@@ -80,9 +81,8 @@ const ReactionsDB = ({postId, reactions}) => {
        </div> */}
 
        <div style={{display: 'inline', position: 'relative'}} onMouseOut={() => setReact(false)} onMouseOver={() => setReact(true)}>
-        {react ? <div style={{position: 'absolute', zIndex:10}}>{reactPost}</div> : null}
-        {/* <button onMouseOver={() => setReact(true)}>{emoji ? emoji : 'Like'}</button> */}
-        <button >{emoji ? emojis[emoji] : 'Like'}</button>
+        {react ? <div style={{position: 'absolute', zIndex:10 , top:"20px", display:'flex'}}>{reactPost}</div> : null}
+        <button >{!emoji && userReact[0]?.type ? emojis[userReact[0]?.type] : emoji ? emojis[emoji] : 'Like'}</button>
         {/* <div> */}</div>
      
        <button>comment</button>

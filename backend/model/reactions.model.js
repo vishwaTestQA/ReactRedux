@@ -16,6 +16,15 @@ const reactionSchema = new mongoose.Schema({
         enum: ['like', 'dislike', 'love', 'laugh', 'sad', 'angry'],
         required: true
     },
+
+  //  username:{
+  //           type: String,
+  //           ref:'Author'
+  //       }
+
+    // username:{
+
+    // }
   //   reactions: {
   //   like: { type: Number, default: 0 },
   //   dislike: { type: Number, default: 0 },
@@ -35,5 +44,14 @@ const reactionSchema = new mongoose.Schema({
   timestamps: true, // Automatically add createdAt and updatedAt fields
     versionKey: false // Disable the __v fiel
   });
+
+  reactionSchema.virtual('authors', {
+    ref: 'Author',
+    localField: 'authorId',           //connect reactionSchema to author schema with its id
+    foreignField: '_id',                // then can access 
+  })
+
+reactionSchema.set('toobject', {virtuals: true})
+reactionSchema.set('toJSON', {virtuals: true})
 
 export const Reactions = mongoose.model('Reaction', reactionSchema);

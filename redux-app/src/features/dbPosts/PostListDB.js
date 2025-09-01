@@ -2,6 +2,7 @@ import React from 'react'
 import { selectAllPosts, useGetAllPostsQuery } from './postSliceDB'
 import { useSelector } from 'react-redux';
 import ReactionsDB from './ReactionsDB';
+import ReactionComments from './ReactionComments';
 
 //initially getallpost will be executed in index.js where we provided to execute from store
 //  so the homepage will be updted with the posts from server
@@ -18,11 +19,13 @@ const PostListDB = () => {
     
     console.log("getAllPost", allPost);
 
+    //eg: 10 post so 10 postId
     const renderPost = allPost.map(post => (
-        <div key={post._id}>
+        <div key={post._id} style={{marginBottom: "20px"}}>
             <div>{post.title}</div>
             <div>{post.content}</div>
             <ReactionsDB postId = {post._id} reactions={post.reactions}/>
+            <ReactionComments reactions={post.reactions}/>
         </div>
     ))
   return (
