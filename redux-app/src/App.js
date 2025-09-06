@@ -27,6 +27,7 @@ function App() {
         <Route element={<RequireAuth/>}>
         <Route index element={<HomePage/>}/> 
         <Route path="/users" element={<UserList/>}/>
+        {/* <Route path="/users/:userId" element={<UserPageDB/>}/> */}
         <Route path="/users/:userId" element={<UserPageDB/>}/>
        </Route>
          {/* <Route index element={<PostList/>}/> */}
@@ -37,10 +38,11 @@ function App() {
           {/* <Route path="edit/:postId" element={<EditPost/>}/> */}
          </Route>
 
-       {/* <Route path='users'>
-       <Route index element = {<UsersList/>}/>
-       <Route path=':userId' element = {<UserPage/>}/>
-    </Route> */}
+       <Route path='users'>
+       {/* <Route index element = {<UsersList/>}/> */}
+       {/* <Route path=':userId' element = {<UserPage/>}/> */}
+       {/* <Route  element = {<UserPage/>}/> */}
+    </Route>
 
      {/* <Route path="*" element={<div>missing page - 404</div>}/> */}
      <Route path="*" element={Navigate('/')}/>

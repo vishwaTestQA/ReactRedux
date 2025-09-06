@@ -13,6 +13,7 @@ export const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [login, {isLoading}] = useLoginMutation();
+  const [err, setErr] = useState(false);
   const  handleSubmit = async (e) => {
     e.preventDefault();
       try{
@@ -26,7 +27,7 @@ export const LoginPage = () => {
         console.log("user logged in successfully:", userData);
         navigate('/');  //redirect to home page
       }catch(err){
-        console.error('Login failed:', err);
+        setErr(true)
       }
   //     axios.post('https://jsonplaceholder.typicode.com/posts', {
   //       username,
@@ -39,6 +40,7 @@ export const LoginPage = () => {
 
   return (
     <div>
+      {err ? <div>Invalid Login!.</div> : null}
       <form onSubmit={handleSubmit}>
       <label htmlFor="username">username</label>
       <input type="text" id="username" placeholder='username' value={username} onChange={e => setUsername(e.target.value)}/>

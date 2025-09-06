@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { selectAllPosts, useGetAllPostsQuery } from './postSliceDB'
 import { useSelector } from 'react-redux';
 import ReactionsDB from './ReactionsDB';
@@ -7,24 +7,21 @@ import ReactionComments from './ReactionComments';
 //initially getallpost will be executed in index.js where we provided to execute from store
 //  so the homepage will be updted with the posts from server
 // later whatever the posts are posted from this user is updated on UI (but wont fetch until we fetch manually)
-const PostListDB = () => {
-
-    const {
-        // data:post, 
-        isLoading, isError, isSuccess,                                      
-        }  = useGetAllPostsQuery('getAllPosts');   //here this will directly fetch the posts
-        // from backend so ony when we post a new post or can use pool to refetch
+const PostListDB = ({post}) => {
+    // const {
+    //     // data:post, 
+    //     isLoading, isError, isSuccess,                                      
+    //     }  = useGetAllPostsQuery('getAllPosts');   //here this will directly fetch the posts
+    //     // from backend so ony when we post a new post or can use pool to refetch
     
-    const allPost = useSelector(selectAllPosts); // it selects the posts from cache
-    
-    console.log("getAllPost", allPost);
+    // const allPost = useSelector(selectAllPosts); // it selects the posts from cache
 
     //eg: 10 post so 10 postId
-    const renderPost = allPost.map(post => (
+    const renderPost = post.map(post => (
         <div key={post._id} style={{marginBottom: "20px"}}>
             <div>{post.title}</div>
             <div>{post.content}</div>
-            <ReactionsDB postId = {post._id} reactions={post.reactions}/>
+            <ReactionsDB postId={post._id} reactions={post.reactions}/>
             <ReactionComments reactions={post.reactions}/>
         </div>
     ))

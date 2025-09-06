@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux'
 import { selectCurrentToken, selectCurrentUser } from '../api/auth/authSlice';
 import { Link } from 'react-router-dom';
 import PostListDB from '../dbPosts/PostListDB';
+import AllPostDB from '../dbPosts/AllPostDB';
 
 export const HomePage = () => {
     // console.log(check);
@@ -20,7 +21,7 @@ export const HomePage = () => {
   return (
     <div>
       {/* <Link to='/users'>Users</Link> */}
-       <PostListDB/>
+       <AllPostDB/>
       {/* <Link to='/users'>AllPosts</Link> */}
     </div>
   )

@@ -16,7 +16,7 @@ export const UserList = () => {
       setFlag(true)
     } 
     const renderUsers = allusers.flat().map(user =>
-        <Link to={`${user._id}`}key={user._id} onClick={handlePage}>
+        <Link to={`${user._id}`} replace key={user._id} onClick={handlePage}>
           <h3>{user.username}</h3>
          {/* { flag ? <UserPageDB userId = {user._id}></UserPageDB> : null } */}
           </Link>

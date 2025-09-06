@@ -1,97 +1,114 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { generatePath, Link, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
+import { ReplaceUserLink } from "./utility";
+import UserPageDB from "../dbUsers/UserPageDB";
 
-const ReactionComments = ({reactions}) => {
-    // const reac = {
-    //     like: 0,
-    //     dislike:0,
-    //     love:0,
-    //     laugh:0,
-    //     sad:0,
-    //     angry:0
-    // }
+const ReactionComments = ({ reactions }) => {
 
-    //     const reac = {
-    //     type: "like",
-    //     type:"dislike",
-    //     type:"love",
-    //     type:"laugh",
-    //     type:"",
-    //     angry:0
-    // }
+  //Just to check the userId before rendering the component unnecessrly
+ const location = useLocation();
+ const userId = location.pathname.split('/')[1];
+ 
 
-      const emojis = {
-      like: '👍🏻',
-      dislike: '👎🏻',
-      love:'❤️',
-      laugh:'😂',
-      sad:'😢',
-      angry:'😡'  
+  const emojis = {
+    like: '👍🏻',
+    dislike: '👎🏻',
+    love: '❤️',
+    laugh: '😂',
+    sad: '😢',
+    angry: '😡'
+  }
+
+  const countType = reactions.reduce((re, { type, authors}) => {
+    re[type] = (re[type] || 0) + 1;
+    // re[authors[0]._id] = authors.map(obj => obj._id)
+    return re;
+  }, {})
+
+ console.log('count type', countType);
+
+  //Object.fromEntries again convert the result array from Object.entries to an object
+  const sortedReactBasedOnCount = Object.fromEntries(Object.entries(countType).sort(([, a], [, b]) => b - a))
+
+  //calculate the total reaction to show the numbers above the Like buttom
+  const totalReactCount = Object.entries(countType).reduce((acc, [k, v]) => acc + v, 0)
+
+  const [reactCount, setReactCount] = useState(false)
+  const handleReact = (e) => {
+    if (e.target === e.currentTarget) {   //works for stops bubbling
+      // e.bubbles = false;
+      // console.log("eeeeee", e.bubbles);
+      setReactCount(!reactCount)
     }
+    // e.stopPropagation();                          //doesnt works  
+    // e.nativeEvent.stopImmediatePropagation();
+  }
 
-  const countType = reactions.reduce((re, {type}) => {
-     re[type] = (re[type] || 0) + 1;
-     return re;
-  },{})
+  const [showusers, setShowUsers] = useState(true)
+  const [index, setIndex] = useState(0)
+  const showUsersReacted = (k, i) => {
+    setShowUsers(k)
+    setIndex(i)
+  }
 
-const obj2 = countType;
-
-//Object.fromEntries again convert the result array from Object.entries to an object
-const sortedReactBasedOnCount = Object.fromEntries(Object.entries(countType).sort(([,a],[,b]) => b-a))
-
-const totalReactCount = Object.entries(countType).reduce((acc, [k,v]) => acc+v, 0)
-
-console.log("total", totalReactCount);
-
-const [reactCount, setReactCount] = useState(false)
-const handleReact = (e) => {
-    e.stopPropagation()
-    setReactCount(!reactCount)
-}
-
-// useEffect(() => {
-//     if(!reactCount) return 
-// },[reactCount])
-
+  console.log("sorted", sortedReactBasedOnCount)
   return (
     <div role="button" onClick={handleReact}>
-      {totalReactCount > 0 ? totalReactCount-1+"+" : 0}{
-       Object.entries(sortedReactBasedOnCount).map(([k,v]) => emojis[k])
+      {totalReactCount > 0 ? totalReactCount: null}{
+        Object.entries(sortedReactBasedOnCount).map(([k, v]) => emojis[k])
       }
-     {reactCount ? 
-          <div style={{position: "absolute", 
-                        top:0, bottom:0, left:0, right:0, 
-                        zIndex:999, 
-                        background:"white", 
-                        height:"100%", 
-                        display:"flex", flexDirection: "row", alignItems:"flex-start", justifyContent: "space-between"}}>
-          
-          <div style={{display:"flex", flexDirection: "row", width:"100px"}}>
+      {reactCount === true ?
+        <div style={{
+          position: "fixed",
+          top: "40%", bottom: 0, left: 0, right: 0,
+          zIndex: 999,
+          background: "grey",
+          height: "100%",
+          display: "flex", flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between"
+        }}>
+
+          <div style={{ display: "flex", flexDirection: "row", width: "100px" }}>
             {
-            //countType has all reactions with its count in obj {like:2, laugh:1}
-            Object.entries(countType).map(([k, v]) =>
-            <>
-            <div key={k} style={{marginRight:"20px"}}>{emojis[k]} {v}</div>
-            <div>
-                {reactions.map(r =>  r.type === k
-                    ? <div><Link>{r.authors[0].username}</Link></div> 
-                    : null
-                )}
-            </div>
-            </> 
-            )
+              //countType has all reactions with its count in obj {like:2, laugh:1}
+              Object.entries(sortedReactBasedOnCount).map(([k, v], i) =>
+
+                //top header for reactions
+                <div key={i} onMouseOver={() => showUsersReacted(k, i)} className={`${index === i} ? 'active' : 'inActive'`}>
+                  <div style={{ marginRight: "20px" }}>
+                    <span>{emojis[k]}</span>
+                    <span>{v}</span>
+                  </div>
+                  <div>
+                    {i == index && reactions.map(r => r.type === showusers
+                      // ? <div><Link to={`users/${r.authors[0]._id}`}>{r.authors[0].username}</Link></div>
+                      // ? <div><Link to={`users`} state={{userId: `${r.authors[0]._id}`}}>{r.authors[0].username}</Link></div>
+                      // ? <div><Link to={`/user/`} state={{userId:`${r.authors[0]._id}`}}>{r.authors[0].username}</Link></div>
+                      ? <div>
+                           {userId !== r.authors[0]._id ? <Link to={`/users/${r.authors[0]._id}`} replace>{r.authors[0].username}</Link>: null}
+                        </div>
+                      // ?<div onClick={()=> setAuthorId(r.authors[0]._id)}>{r.authors[0].username}</div>
+                      : null
+// {/* <div onClick={() => handleLink(r.authors[0]._id)}>{r.authors[0].username}</div> */}
+                      // <Link onClick={() => handleLink(r.authors[0]._id)} to={ref}>{r.authors[0].username}</Link>
+                    )}
+                  </div>
+                  {/* {authorId ? <UserPageDB userId ={authorId}></UserPageDB> : null} */}
+                </div>
+              )
             }
           </div>
 
           <div>
-          <button onClick={handleReact}>X</button>
+            <button onClick={handleReact}>X</button>
           </div>
-          </div> 
-          : null
-        }
+        </div>
+        : null
+      }
 
     </div>
   )
+
+ 
 }
 
 export default ReactionComments

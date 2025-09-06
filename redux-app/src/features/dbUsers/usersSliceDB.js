@@ -29,11 +29,19 @@ export const extendedApiSliceDB = apiSliceForPost.injectEndpoints({
                 { type: 'User', id: "LIST" },
                 ...result.ids.map(id => ({ type: 'User', id }))
             ]
-        })
+        }),
+
+        getUserById: builder.query({
+           query: (id) => `users/${id}`
+        }),
+        providesTags: (result, error, arg) => [
+                { type: 'User', id: "LIST" },
+                ...result.ids.map(id => ({ type: 'User', id }))
+        ]
     })
 });
 
-export const { useGetAllUsersQuery } = extendedApiSliceDB;
+export const { useGetAllUsersQuery, useGetUserByIdQuery } = extendedApiSliceDB;
 
 //This is RTK Query’s auto-generated selector for the getAllUsers endpoint.
 //It gives you access to the full query cache state for that endpoint.

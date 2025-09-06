@@ -31,6 +31,19 @@ export const post = async (req, res) => {
 }
 
 export const getPosts = async (req, res) => {
+    if(req.query.userId){
+        const userId = req.query.userId;
+        console.log("query", req.query.userId);
+        const allPost = await Post.find({authorId: userId})
+       .populate({path:'reactions', 
+                  select:'type authorId', 
+                  populate:{path: 'authors', select:'username'}}).exec()
+
+    console.log("alpost", allPost)
+   return res.status(200).json({
+      allPost: allPost
+    })    
+    }
     
     // const allPost = await Post.find()
     // const allPost = await Post.find({}).populate('reactions').exec()
@@ -44,3 +57,9 @@ export const getPosts = async (req, res) => {
       allPost: allPost
     })
 }
+
+export const getPostsByUser = async (req, res) => {
+    const userId = req.params.userId;
+    console.log(userId);
+}
+

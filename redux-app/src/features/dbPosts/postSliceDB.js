@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { sub } from 'date-fns';
 import { apiSliceForPost } from "../api/apiSliceForPost";
+import { useSelector } from "react-redux";
 
 //CreateEntityAdaptor  is a utility from Redux Toolkit (RTK) that helps you
 //  manage normalized state for collections (like lists of posts, users, etc.).
@@ -61,33 +62,63 @@ export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
                 ...reaction
               }
            }),
-             providesTags: (result, error, {postId}) => [
-                { type: 'Post', id: "LIST" },   
-                {type: 'Post', id: postId},                      //name given as List
-                ...result.ids.map(id => ({ type: 'Post', id }))
+            //  providesTags: (result, error, arg) => [
+            //     { type: 'Post', id: "LIST" },   
+            //     // {type: 'Post', id: postId},                      //name given as List
+            //     ...result.ids.map(id => ({ type: 'Post', id }))
+            // ]
+               invalidatesTags: [
+                { type: 'Post', id: "LIST" }
             ]
-        }),
 
+            // async onQueryStarted(reaction, { dispatch, queryFulfilled }) {
+            //     // `updateQueryData` requires the endpoint name and cache key arguments,
+            //     // so it knows which piece of cache state to update
+            //     const {postId} = reaction
+            //     const patchResult = dispatch(
+            //         // updateQueryData takes three arguments: the name of the endpoint to update, the same cache key value used to identify the specific cached data, and a callback that updates the cached data.
+            //         extendedApiSlicePostDB.util.updateQueryData('getAllPosts', undefined, draft => {
+            //             // The `draft` is Immer-wrapped and can be "mutated" like in createSlice
+            //             console.log("entities",draft.entities[postId])
+            //             const post = draft.entities[postId]
+            //             // if (post) post.reactions = reaction
+            //         })
+            //     )
+            //     try {
+            //         await queryFulfilled
+            //     } catch {
+            //         patchResult.undo()
+            //     }
+            // }
+        }),
+        
         getPostsByUserId: builder.query({
-            query: id => `/posts/?userId=${id}`,
+            query: id => `/post/?userId=${id}`,
             transformResponse: responseData => {
-                let min = 1;
-                const loadedPosts = responseData.map(post => {
-                    if (!post?.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
-                    if (!post?.reactions) post.reactions = {
-                        thumbsUp: 0,
-                        wow: 0,
-                        heart: 0,
-                        rocket: 0,
-                        coffee: 0
-                    }
+                // let min = 1;
+                const loadedPosts = responseData.allPost.map(post => {
+                //     if (!post?.date) post.date = sub(new Date(), { minutes: min++ }).toISOString();
+                //     if (!post?.reactions) post.reactions = {
+                //         thumbsUp: 0,
+                //         wow: 0,
+                //         heart: 0,
+                //         rocket: 0,
+                //         coffee: 0
+                //     }
+                console.log("post in getPostsByUser", post);
                     return post;
                 });
+                // console.log("getPostByUser", responseData)
                 return postsAdapter.setAll(initialState, loadedPosts)
             },
-            providesTags: (result, error, arg) => [
+            
+            providesTags: (result = [], error, arg) => 
+                result.length ? [
                 ...result.ids.map(id => ({ type: 'Post', id }))
+            //       ...result.map(post => ({ type: 'Post', id: post._id})),
+            //   { type: 'Post', id: 'LIST' }
             ]
+            : [{ type: 'Post', id: 'LIST' }]
         }),
         addNewPost: builder.mutation({
             query: initialPost => ({
@@ -179,7 +210,7 @@ export const selectPostResult = extendedApiSlicePostDB.endpoints.getAllPosts.sel
 //create memoized selector
 const selectPostsData = createSelector(
   selectPostResult,
-  postsResult => postsResult.data ?? initialState       //normalized state object with ids and entities
+  postsResult => {console.log("postResult", postsResult);return postsResult.data ?? initialState   }    //normalized state object with ids and entities
 )
 
 export const{
@@ -198,3 +229,13 @@ export const {
     useAddReactionMutation
 } = extendedApiSlicePostDB        //These auto gen hooks will interact with server 
                                   // and update the client cache throuh createEntityAdaptor
+
+
+//This is for to get the spoecific fields from the allpost
+export const selectPostsByAuthor  = createSelector(
+    [selectAllPosts,(_, authorId) => authorId],
+    (posts, authorId) => posts.filter(post => post.authorId === authorId)
+)
+
+// This is for selecting 
+// export const userPosts = useSelector(state => selectPostsByAuthor(state, authorId))
