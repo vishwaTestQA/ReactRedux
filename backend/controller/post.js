@@ -2,10 +2,9 @@ import { Post } from "../model/post.model.js";
 import { Reactions } from "../model/reactions.model.js";
 
 export const post = async (req, res) => {
-    console.log("entered ========================")
     const { title, content, authorId } = req.body;
 
-    console.log("=========", title, content, authorId)
+    console.log("post a data", title, content, authorId)
 
     if (!title || !content || !authorId) {
         return res.status(400).json({ message: 'All fields are required' });
@@ -39,7 +38,7 @@ export const getPosts = async (req, res) => {
                   select:'type authorId', 
                   populate:{path: 'authors', select:'username'}}).exec()
 
-    console.log("alpost", allPost)
+    // console.log("alpost", allPost)
    return res.status(200).json({
       allPost: allPost
     })    
@@ -50,7 +49,7 @@ export const getPosts = async (req, res) => {
     const allPost = await Post.find({})
        .populate({path:'reactions', 
                   select:'type authorId', 
-                  populate:{path: 'authors', select:'username'}}).exec()
+                  populate:{path: 'authors', select:'username profilePicture'}}).exec()
 
     console.log("alpost", allPost)
     res.status(200).json({

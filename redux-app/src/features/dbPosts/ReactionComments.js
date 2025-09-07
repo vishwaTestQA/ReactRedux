@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { generatePath, Link, matchPath, useLocation, useNavigate, useParams } from "react-router-dom";
-import { ReplaceUserLink } from "./utility";
-import UserPageDB from "../dbUsers/UserPageDB";
+// import '../../../src/App.css'
 
 const ReactionComments = ({ reactions }) => {
 
@@ -46,9 +45,11 @@ const ReactionComments = ({ reactions }) => {
 
   const [showusers, setShowUsers] = useState(true)
   const [index, setIndex] = useState(0)
+
   const showUsersReacted = (k, i) => {
     setShowUsers(k)
     setIndex(i)
+    console.log(i)
   }
 
   console.log("sorted", sortedReactBasedOnCount)
@@ -58,22 +59,16 @@ const ReactionComments = ({ reactions }) => {
         Object.entries(sortedReactBasedOnCount).map(([k, v]) => emojis[k])
       }
       {reactCount === true ?
-        <div style={{
-          position: "fixed",
-          top: "40%", bottom: 0, left: 0, right: 0,
-          zIndex: 999,
-          background: "grey",
-          height: "100%",
-          display: "flex", flexDirection: "row", alignItems: "flex-start", justifyContent: "space-between"
-        }}>
-
-          <div style={{ display: "flex", flexDirection: "row", width: "100px" }}>
+        <div className={'reaction-modal'}>
+          <div className={'reaction-group'} style={{ display: "flex", flexDirection: "row", width: "100px" }}>
             {
               //countType has all reactions with its count in obj {like:2, laugh:1}
               Object.entries(sortedReactBasedOnCount).map(([k, v], i) =>
 
                 //top header for reactions
-                <div key={i} onMouseOver={() => showUsersReacted(k, i)} className={`${index === i} ? 'active' : 'inActive'`}>
+                <div key={i} 
+                     onMouseOver={() => showUsersReacted(k, i)} 
+                     className={`${index === i}` ? "active" : "inActive"}>
                   <div style={{ marginRight: "20px" }}>
                     <span>{emojis[k]}</span>
                     <span>{v}</span>

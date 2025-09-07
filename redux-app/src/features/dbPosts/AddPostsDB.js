@@ -33,7 +33,7 @@ const AddPostsDB = () => {
           // dispatch(addNewPost({title, body: content, author})).unwrap();
         addNewPost({title, content, userId}).unwrap();
         // console.log("after adding post", resp)
-        navigate('/');
+        navigate('/home');
         console.log(title, userId, content)
       }catch(error){
         console.log(error.message)

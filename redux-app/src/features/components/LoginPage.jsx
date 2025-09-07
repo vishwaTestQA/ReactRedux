@@ -22,10 +22,11 @@ export const LoginPage = () => {
                    user:  userData.user.username,
                    token: userData.accessToken,
                    roles: userData.user.roles, // Assuming roles are part of the user object
-                   id: userData.user.id
+                   id: userData.user.id,
+                   profilePicture: userData.user.profilePicture
             })) 
         console.log("user logged in successfully:", userData);
-        navigate('/');  //redirect to home page
+        navigate('/home');  //redirect to home page
       }catch(err){
         setErr(true)
       }

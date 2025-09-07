@@ -1,4 +1,5 @@
 import { Routes, Route, Navigate } from "react-router-dom";
+import './App.css'
 import { Layout } from "./features/components/Layout";
 import PostList from "./features/posts/PostList";
 import { EditPost } from "./features/posts/EditPost";
@@ -13,6 +14,7 @@ import RequireAuth from "./features/components/RequireAuth";
 import {UserList} from './features/dbUsers/userListDB'
 import UserPageDB from "./features/dbUsers/UserPageDB";
 import AddPostsDB from "./features/dbPosts/AddPostsDB";
+import ProfilePage from "./features/components/ProfilePage";
 // import { LoginPage } from "./features/components/LoginPage";
 
 function App() {
@@ -20,12 +22,13 @@ function App() {
   console.log("user in App: ", user);
   return (
      <Routes>
-      {/* <Route index element={<LoginPage/>}/> */}
-  <Route path = '/login' element={<LoginPage/>}/>
+      <Route index element={<LoginPage/>}/>
+  {/* <Route path = '/login' element={<LoginPage/>}/> */}
         <Route path="/register" element={<Register/>}/>
       <Route path='/' element={<Layout/>}>
         <Route element={<RequireAuth/>}>
-        <Route index element={<HomePage/>}/> 
+        <Route path='/home' element={<HomePage/>}/> 
+        <Route path='/profile' element={<ProfilePage/>}/> 
         <Route path="/users" element={<UserList/>}/>
         {/* <Route path="/users/:userId" element={<UserPageDB/>}/> */}
         <Route path="/users/:userId" element={<UserPageDB/>}/>
