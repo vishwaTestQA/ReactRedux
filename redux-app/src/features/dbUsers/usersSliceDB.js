@@ -4,7 +4,7 @@ import { createEntityAdapter, createSelector } from "@reduxjs/toolkit";
 import { apiSliceForPost } from "../api/apiSliceForPost";
 
 const usersAdapter = createEntityAdapter({
-    sortComparer: (a, b) => a.username.localeCompare(b.username),
+    // sortComparer: (a, b) => a.username.localeCompare(b.username),
     selectId: (user) => user._id,
 });
 
@@ -23,7 +23,6 @@ export const extendedApiSliceDB = apiSliceForPost.injectEndpoints({
                 // console.log("userdata", userData)
                 return usersAdapter.setAll(initialState, response.users);
             },
-
            // don’t really need providesTags for getAllUsers 
             providesTags: (result, error, arg) => [
                 { type: 'User', id: "LIST" },
@@ -32,16 +31,26 @@ export const extendedApiSliceDB = apiSliceForPost.injectEndpoints({
         }),
 
         getUserById: builder.query({
-           query: (id) => `users/${id}`
-        }),
-        providesTags: (result, error, arg) => [
+           query: (id) => `users/${id}`,
+           providesTags: (result, error, arg) => [
                 { type: 'User', id: "LIST" },
                 ...result.ids.map(id => ({ type: 'User', id }))
         ]
-    })
+        }),
+         updateProfilePicture: builder.mutation({
+            query: ({userId, profilePicture}) => ({
+               url: 'post/profilePicture',
+               method: 'POST',
+               body: {userId, profilePicture}
+            }),
+            invalidatesTags: (result, error, arg) =>[
+               { type: 'User', id: arg.id }
+            ]
+        }),
+})
 });
 
-export const { useGetAllUsersQuery, useGetUserByIdQuery } = extendedApiSliceDB;
+export const { useGetAllUsersQuery, useGetUserByIdQuery, useUpdateProfilePictureMutation } = extendedApiSliceDB;
 
 //This is RTK Query’s auto-generated selector for the getAllUsers endpoint.
 //It gives you access to the full query cache state for that endpoint.

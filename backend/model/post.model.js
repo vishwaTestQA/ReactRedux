@@ -16,6 +16,10 @@ const postSchema = new mongoose.Schema({
         ref: 'Author',
         required: true  // Reference to the Author model
         },
+    image: {
+  url: { type: String, default: null },
+  public_id: { type: String, default: null }
+}
 
     // username:{
     //         type: String,
@@ -35,6 +39,12 @@ postSchema.virtual('reactions', {
     localField: '_id',
     foreignField: 'postId'
 })
+
+  postSchema.virtual('authors', {
+    ref: 'Author',
+    localField: 'authorId',           //connect reactionSchema to author schema with its id
+    foreignField: '_id',                // then can access 
+  })
 
 //   postSchema.virtual('authors', {
 //     ref: 'Author',

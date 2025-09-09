@@ -95,9 +95,9 @@ const ReactionsDB = ({ postId, reactions }) => {
 console.log("emoji at start", emoji)
   return (
     // style={{display:'flex'}}
-    <div>
+    <div style={{width:'100%'}}>
       <div className={'main-react'}
-        style={{ display: 'inline', position: 'relative', }}
+        style={{ display: 'inline', position: 'relative', width:'100%'}}
         onMouseOut={() => setReact(false)}
         onMouseOver={() => setReact(true)}
         onClick={(e) => clickLike(e)}>
@@ -121,14 +121,28 @@ console.log("emoji at start", emoji)
             ? emojis[userReacted[0]?.type]
             : !emoji =='Like' && !emoji== 'remove'
               ? emojis[emoji] 
-              : emoji === "remove" ? 'Like'
-              : 'Like'
+              : emoji === "remove" ? <button className='main-btn' style={{border:"none"}}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>Like</button>
+              : <button className='main-btn' style={{border:"none", textAlign:'center'}}>
+                <span style={{marginRight:'5px'}}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></span>Like</button>
           }
         </button>
       </div>
 
-      <button className='main-btn' style={{border:"none"}}>comment</button>
-      <button className='main-btn' style={{border:"none"}}>share</button>
+      <button className='main-btn' style={{border:"none"}}>
+        <span style={{marginRight:'5px'}}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" 
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+        class="lucide lucide-message-circle-more-icon lucide-message-circle-more">
+          <path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/>
+          <path d="M8 12h.01"/><path d="M12 12h.01"/><path d="M16 12h.01"/></svg> </span>
+          Comment
+      </button>
+      
+      <button className='main-btn' style={{border:"none"}}>
+        <span style={{marginRight:'5px'}}><svg xmlns="http://www.w3.org/2000/svg" 
+        width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+        class="lucide lucide-share2-icon lucide-share-2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/>
+        <circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg></span>
+        share</button>
       {/* </div> */}
       {/* <div>{JSON.stringify(postId)}</div> */}
     </div>

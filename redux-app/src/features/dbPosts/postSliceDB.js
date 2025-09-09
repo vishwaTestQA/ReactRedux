@@ -167,17 +167,6 @@ export const extendedApiSlicePostDB = apiSliceForPost.injectEndpoints({
                 { type: 'Post', id: arg.id }
             ]
         }),
-    
-        updateProfilePicture: builder.mutation({
-            query: (pic) => ({
-               url: 'post/profilePicture',
-               method: 'POST',
-            body: {pic}
-            }),
-            invalidatesTags: (result, error, arg) =>[
-               { type: 'Post', id: arg.id }
-            ]
-        }),
 
         addReactionxxxxxx: builder.mutation({
              //Sends a PATCH request to update the reactions for a specific post (postId) on the server.
@@ -238,7 +227,6 @@ export const {
     useUpdatePostMutation,
     useDeletePostMutation,
     useAddReactionMutation,
-    useUpdateProfilePictureMutation
 } = extendedApiSlicePostDB        //These auto gen hooks will interact with server 
                                   // and update the client cache throuh createEntityAdaptor
 

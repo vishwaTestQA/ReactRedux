@@ -17,8 +17,8 @@ const authorSchema = new mongoose.Schema({
         select: false, // Exclude password from query results by default
     },
     profilePicture: {
-        type: String,   // URL or path to the profile picture
-        default: 'defaultProfilePic.jpg', // Default profile picture if none is provided
+        type: Object,   // URL or path to the profile picture
+        default: {}, // Default profile picture if none is provided
     },
     bio: {
         type: String,

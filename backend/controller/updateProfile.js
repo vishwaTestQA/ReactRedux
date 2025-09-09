@@ -3,23 +3,23 @@ import { Author } from "../model/author.model.js";
 
 export const updateProfilePic = async (req, res) => {
   try {
-    const { profilePicFromUser } = req.body;
-    console.log('pro pic', profilePicFromUser)
+    const { userId, profilePicture } = req.body;
+    console.log('pro pic', profilePicture)
 
-    if (!profilePicFromUser) {
+    if (!profilePicture) {
       return res.status(400).json({ message: "profile pic is required" });
     }
 
-    const userId = res.user._id; //while verifying the token we setting res.user = user;
+    // const userId = res.user._id; //while verifying the token we setting res.user = user;
     //hence the middleware (verifyJWT()) has modified the res
 
-    console.log('prev_img', res.user.profilePic.public_id)
-    if (res.user.profilePic.public_id) {
-      await cloudinary.uploader.destroy(res.user.profilePic.public_id);
-    }
+    // console.log('prev_img', res.user.profilePic.public_id)
+    // if (res.user.profilePic.public_id) {
+    //   await cloudinary.uploader.destroy(res.user.profilePic.public_id);
+    // }
 
     //upload the reponse to cloudinary (image and video repository)
-    const uploadResponse = await cloudinary.uploader.upload(profilePicFromUser);
+    const uploadResponse = await cloudinary.uploader.upload(profilePicture);
     // const uploadResponse = "";
 
     // console.log('uploader resp', uploadResponse) //it gives asset_id, public_id, version, width, height, format, created_at, url, asset_folder
@@ -32,10 +32,11 @@ export const updateProfilePic = async (req, res) => {
     //   { new: true } 
     // ); //{new:true} will return the user object after updation
 
+    console.log("result", uploadResponse);
     //update with public_id
     const updatedUser = await Author.findByIdAndUpdate(
       userId,
-      { profilePic: {
+      { profilePicture: {
         url: uploadResponse.secure_url,
         public_id: uploadResponse.public_id 
       }},
@@ -46,9 +47,9 @@ export const updateProfilePic = async (req, res) => {
       //   },
       // },
       { new: true } 
-    ); //{new:true} will return the user object after updation
+    ).exec(); //{new:true} will return the user object after updation
 
-    console.log('next_img', updatedUser.profilePic.public_id)
+    console.log('next_img', updatedUser.profilePicture.public_id)
     res.status(200).json(updatedUser);
   } catch (error) {
     console.log("error in uploader", error.message);

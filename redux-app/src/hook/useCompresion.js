@@ -1,44 +1,33 @@
+import { useState, useCallback } from "react";
 import imageCompression from "browser-image-compression";
-import { useEffect, useState } from "react";
 
-//react hooks shouldnot be async
-export const useCompression = () => {
+export function useCompression() {
+  const [compressedImage, setCompressedImage] = useState(null);
+  const [loading, setLoading]         = useState(false);
+  const [error, setError]             = useState(null);
 
-   const [compressedImage, setCompressedImage] = useState(null)
-   const [loading, setLoading] = useState(false)
-   const [error, setError] = useState(null)
+  const compressImage = useCallback(async (file, options = { maxSizeMB: 1, maxWidthOrHeight: 800 }) => {
+    if (!file) return;
 
-  //  useEffect(()=>{
-  //   if(!file) return
-  //   // compressImage()
-  //  },[])
+    setLoading(true);
+    setError(null);
 
- const compressImage = async(file, options = {fileSize:1, maxWidthOrHeight:800})=>{
-        setLoading(true)
-    // Compression options
-       const {fileSize, maxWidthOrHeight} = options
-        const compressOptions = {
-        maxSizeMB: fileSize, // Reduce to 1MB
-        maxWidthOrHeight: maxWidthOrHeight, // Resize
-        useWebWorker: true,
+    try {
+      const compressedFile = await imageCompression(file, options);
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        setCompressedImage(reader.result);
+        setLoading(false);
       };
-  
-      try {
-        const compressedFile = await imageCompression(file, options);
-        const reader = new FileReader();
-        reader.readAsDataURL(compressedFile);
-  
-        reader.onload = () => {
-          setCompressedImage(reader.result)
-          setLoading(false)
-      }
-      } catch (error) {
-        console.error("Compression failed:", error);
-        setError(error.message)
-        setLoading(false)
-      }
-   }
-   
 
-       return {compressedImage, loading, error, compressImage};
-     };
+      reader.readAsDataURL(compressedFile);
+    } catch (err) {
+      console.error("Compression failed:", err);
+      setError(err.message || "Compression error");
+      setLoading(false);
+    }
+  }, []);
+
+  return { compressedImage, loading, error, compressImage };
+}

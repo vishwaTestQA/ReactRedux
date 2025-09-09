@@ -55,9 +55,10 @@ const ReactionComments = ({ reactions }) => {
   console.log("sorted", sortedReactBasedOnCount)
   return (
     <div role="button" onClick={handleReact}>
-      {totalReactCount > 0 ? totalReactCount: null}{
+    <span> {
         Object.entries(sortedReactBasedOnCount).map(([k, v]) => emojis[k])
-      }
+      }</span>
+      <span style={{marginLeft:"10px"}}>{totalReactCount > 0 ? totalReactCount: null}</span>
       {reactCount === true ?
         <div className={'reaction-modal'}>
           <div className={'reaction-group'} style={{ display: "flex", flexDirection: "row", width: "100px" }}>
@@ -79,7 +80,7 @@ const ReactionComments = ({ reactions }) => {
                       // ? <div><Link to={`users`} state={{userId: `${r.authors[0]._id}`}}>{r.authors[0].username}</Link></div>
                       // ? <div><Link to={`/user/`} state={{userId:`${r.authors[0]._id}`}}>{r.authors[0].username}</Link></div>
                       ? <div>
-                           {userId !== r.authors[0]._id ? <Link to={`/users/${r.authors[0]._id}`} replace>{r.authors[0].username}</Link>: null}
+                           {userId !== r.authors[0]._id ? <Link to={`/users/${r.authors[0]._id}`}>{r.authors[0].username}</Link>: null}
                         </div>
                       // ?<div onClick={()=> setAuthorId(r.authors[0]._id)}>{r.authors[0].username}</div>
                       : null
