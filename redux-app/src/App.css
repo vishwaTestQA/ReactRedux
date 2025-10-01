@@ -89,6 +89,18 @@ body{
   background-color: rgb(174, 166, 166);
 }
 
+.react-btn:first-child:hover{
+  background-color: rgb(174, 166, 166);
+  border-bottom-left-radius: 10px;
+  border-top-left-radius: 10px;
+}
+
+.react-btn:last-child:hover{
+  background-color: rgb(174, 166, 166);
+  border-bottom-right-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
 .reaction-list-btn{
    
 }

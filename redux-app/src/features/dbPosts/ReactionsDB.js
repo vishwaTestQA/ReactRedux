@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { selectCurrentId } from '../api/auth/authSlice'
-import { useAddReactionMutation } from './postSliceDB'
+import { selectPostById, useAddReactionMutation } from './postSliceDB'
+import CommentsDB from './CommentsDB'
 
 const ReactionsDB = ({ postId, reactions }) => {
 
+  const singlePost = useSelector(state => selectPostById(state, postId))
   const [react, setReact] = useState(false)
   const [emoji, setEmoji] = useState(null)
+  const [commentsOpen, setCommentsOpen] = useState(false)
 
   const currentUserId = useSelector(selectCurrentId)
   const [addReaction] = useAddReactionMutation();
@@ -39,9 +42,26 @@ const ReactionsDB = ({ postId, reactions }) => {
       console.log("target===============")
       setReact(false);
       setEmoji('like');
+      setFirstMousrOver(false)
       }
     }
   }
+  const [firstMouseOver, setFirstMousrOver] = useState(false);
+  const handleMouseOver = () =>{
+    if(!firstMouseOver){
+        setReact(true)
+        // setFirstMousrOver(true)
+    }else{
+       setReact(false)
+        //  setFirstMousrOver(false)
+    } 
+  }
+
+    const handleMouseOut = () =>{
+        setReact(false)
+        setFirstMousrOver(false)
+  }
+
   const handleReact = async (e, name, count) => {
     // setEmoji(emojis[name])
     if (e.target === e.currentTarget) {
@@ -56,7 +76,7 @@ const ReactionsDB = ({ postId, reactions }) => {
 
   async function postReaction() {
     try {
-      const reactionResult = await addReaction({ postId, userId: currentUserId, type: emoji }).unwrap();
+      const reactionResult = await addReaction({ postId: singlePost._id, userId: currentUserId, type: emoji }).unwrap();
       console.log("reactions", reactionResult);
     } catch (error) {
       console.log('error')
@@ -65,7 +85,7 @@ const ReactionsDB = ({ postId, reactions }) => {
   }
   useEffect(() => {
     if (!emoji) return
-    console.log({ postId, currentUserId, type: emoji });
+    console.log({  postId: singlePost._id, currentUserId, type: emoji });
     // (async ()=> {
     //     try {
     //    const reactionResult = await addReaction({postId, userId: currentUserId, type: emoji}).unwrap();
@@ -98,8 +118,8 @@ console.log("emoji at start", emoji)
     <div style={{width:'100%'}}>
       <div className={'main-react'}
         style={{ display: 'inline', position: 'relative', width:'100%'}}
-        onMouseOut={() => setReact(false)}
-        onMouseOver={() => setReact(true)}
+        onMouseOut={handleMouseOut}
+        onMouseOver={handleMouseOver}
         onClick={(e) => clickLike(e)}>
 
              {/* display the list of reaction buttons if react is true */}
@@ -117,18 +137,21 @@ console.log("emoji at start", emoji)
 
         {/* interation with the list of button to show the reaction on the post */}
         <button className='main-btn' style={{border:"none"}}>
-          {userReacted[0]?.type
-            ? emojis[userReacted[0]?.type]
-            : !emoji =='Like' && !emoji== 'remove'
-              ? emojis[emoji] 
+          {
+          userReacted[0]?.type    //if incoming data alredy has a reaction for the current user then same will be 
+            ? emojis[userReacted[0]?.type]     
+            : !emoji =='Like' && !emoji== 'remove'  
+              ? emojis[emoji]    //reacting from the reaction list
               : emoji === "remove" ? <button className='main-btn' style={{border:"none"}}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg>Like</button>
+              
+              
               : <button className='main-btn' style={{border:"none", textAlign:'center'}}>
                 <span style={{marginRight:'5px'}}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-thumbs-up-icon lucide-thumbs-up"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2a3.13 3.13 0 0 1 3 3.88Z"/></svg></span>Like</button>
           }
         </button>
       </div>
 
-      <button className='main-btn' style={{border:"none"}}>
+      <button className='main-btn' style={{border:"none"}} onClick={()=> setCommentsOpen(true)}>
         <span style={{marginRight:'5px'}}><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" 
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
         class="lucide lucide-message-circle-more-icon lucide-message-circle-more">
@@ -137,6 +160,10 @@ console.log("emoji at start", emoji)
           Comment
       </button>
       
+      {commentsOpen ? <div>
+        <CommentsDB singlePost={singlePost} currentUserId ={currentUserId} setCommentsOpen={setCommentsOpen}/>
+      </div> : null}
+
       <button className='main-btn' style={{border:"none"}}>
         <span style={{marginRight:'5px'}}><svg xmlns="http://www.w3.org/2000/svg" 
         width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 

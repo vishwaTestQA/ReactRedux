@@ -6,11 +6,12 @@ import { ApiProvider } from '@reduxjs/toolkit/query/react';
 import { apiSlice } from './features/api/apiSlice';   // just like context provider, we need to provide our slice to the app
 import { store } from './app/store';
 import { extendedApiSlice } from './features/posts/postSlice';
-import { Provider } from 'react-redux';
+import { Provider, useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { extendedUserSlice } from './features/Users/usersSlice';
 import { extendedApiSliceDB } from './features/dbUsers/usersSliceDB';
 import { extendedApiSlicePostDB } from './features/dbPosts/postSliceDB';
+import { selectCurrentToken } from './features/api/auth/authSlice';
 
 // store.dispatch(extendedApiSlice.endpoints.getAllPosts.initiate()); // this is to prefetch the data when the app loads
 // store.dispatch(extendedUserSlice.endpoints.getUsers.initiate());  
@@ -24,12 +25,11 @@ import { extendedApiSlicePostDB } from './features/dbPosts/postSliceDB';
 // store.dispatch(extendedUserSlice.endpoints.getUserById.initiate()); // this is to prefetch the user data when the app loads
 // store.dispatch(apiSlice.endpoints.getTodos.initiate()); // this is to prefetch the
 
-store.dispatch(extendedApiSlicePostDB.endpoints.getAllPosts.initiate());
-store.dispatch(extendedApiSliceDB.endpoints.getAllUsers.initiate())
+// store.dispatch(extendedApiSlicePostDB.endpoints.getAllPosts.initiate());
+// store.dispatch(extendedApiSliceDB.endpoints.getAllUsers.initiate());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
     <Provider store={store}> 
       <BrowserRouter>
       <Routes>
@@ -37,8 +37,6 @@ root.render(
     </Routes>
     </BrowserRouter>
     </Provider>
-  
-  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -1,10 +1,15 @@
 import axios from 'axios';
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
 import { setCredentials } from '../api/auth/authSlice';
 import { useLoginMutation } from '../api/auth/apiAuthEndpoints';
+
+
+import { store } from '../../app/store';
+import { extendedApiSlicePostDB } from '../dbPosts/postSliceDB';
+import { extendedApiSliceDB } from '../dbUsers/usersSliceDB';
 
 export const LoginPage = () => {
 
@@ -12,6 +17,9 @@ export const LoginPage = () => {
   const[password, setPassword] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/'
+  console.log("from", from);
   const [login, {isLoading}] = useLoginMutation();
   const [err, setErr] = useState(false);
   const  handleSubmit = async (e) => {
@@ -26,7 +34,13 @@ export const LoginPage = () => {
                    profilePicture: userData.user.profilePicture
             })) 
         console.log("user logged in successfully:", userData);
-        navigate('/home');  //redirect to home page
+        if(userData.accessToken){
+        console.log("token", userData.accessToken);
+        // dispatch(extendedApiSlicePostDB.endpoints.getAllPosts.initiate()); 
+        dispatch(extendedApiSlicePostDB.endpoints.getAllPostsbyLimit.initiate({page:1, limit:5}));
+        dispatch(extendedApiSliceDB.endpoints.getAllUsers.initiate());  
+        }
+        navigate(from || '/', {replace: true});  //redirect to home page
       }catch(err){
         setErr(true)
       }

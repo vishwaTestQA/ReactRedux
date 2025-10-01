@@ -1,6 +1,7 @@
 import express from "express";
 import { register } from "../controller/register.js";
 import login from "../controller/login.js";
+import { refresh } from "../controller/refresh.js";
 
 // const express = require('express');  
 // const loginAuth = require('../controller/loginAuth');
@@ -11,6 +12,6 @@ const authRouter = express.Router();
 console.log("fileExecution")
 authRouter.post('/login', login);  //for testing purpose
 authRouter.post('/register', register);
-
+authRouter.get('/refresh', refresh)
 export default authRouter;
 // module.exports = authRouter;

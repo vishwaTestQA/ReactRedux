@@ -15,4 +15,13 @@ const commentsSchema = new mongoose.Schema({
    timestamps: true 
 })
 
+  commentsSchema.virtual('authors', {
+    ref: 'Author',
+    localField: 'authorId',           //connect reactionSchema to author schema with its id
+    foreignField: '_id',                // then can access 
+  })
+
+commentsSchema.set('toobject', {virtuals: true})
+commentsSchema.set('toJSON', {virtuals: true})
+
 export const Comments = mongoose.model('Comment', commentsSchema)

@@ -7,7 +7,8 @@ import { Author } from '../model/author.model.js';
 
 const login = async (req, res) => {
 //   Simulate a login authentication process
-
+  const cookie = req?.cookies;
+  console.log('cookies', cookie);
   const { username, password } = req?.body;
 
   if(!username || !password){
@@ -46,9 +47,22 @@ const login = async (req, res) => {
         {expiresIn: '2h'}
     )
 
+
+    let oldRTFromServer = !cookie.jwt            //
+                            ? foundUser.refreshToken    //if no rt exist in mongodb then it returns []
+                            : foundUser.refreshToken.filter(rt => rt !== cookie.jwt) // get the kist rt doesnt matches with incomming rt
+
+    try {
+       foundUser.refreshToken = [...oldRTFromServer, refreshToken];
+       foundUser.save();
+       console.log("refreshToken", refreshToken)
+    } catch (error) {
+      
+    }
+//process.env.NODE_ENV === 'production'
     res.cookie('jwt', refreshToken,{
         httpOnly: true, // This makes the cookie inaccessible to JavaScript (helps prevent XSS attacks)
-        secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
+        secure: true, // Use secure cookies in production
         sameSite: 'None', // Helps prevent CSRF attacks
         maxAge: 24 * 60 * 60 * 2, // 2 hours in milliseconds
     })

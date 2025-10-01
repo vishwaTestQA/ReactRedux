@@ -16,6 +16,13 @@ export const apiAuthEndpoints = apiAuthSlice.injectEndpoints({
                     body: credentials
                 })
             }),
+            //    refresh: builder.mutation({
+            //     query: (credentials) => ({
+            //         url: '/auth/refresh',
+            //         method: 'POST',
+            //         body: credentials
+            //     })
+            // }),
         // builder.query({
         //     getAllUser: { 
         //         query: () => '/auth/users',

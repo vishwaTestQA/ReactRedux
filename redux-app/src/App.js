@@ -15,6 +15,9 @@ import {UserList} from './features/dbUsers/userListDB'
 import UserPageDB from "./features/dbUsers/UserPageDB";
 import AddPostsDB from "./features/dbPosts/AddPostsDB";
 import ProfilePage from "./features/components/ProfilePage";
+import  EditPostDB  from "./features/dbPosts/EditPostDB";
+import DeletePostDB from "./features/dbPosts/DeletePostDB";
+import AllPostByLimitDB from "./features/dbPosts/AllPostByLimitDB";
 // import { LoginPage } from "./features/components/LoginPage";
 
 function App() {
@@ -22,24 +25,36 @@ function App() {
   console.log("user in App: ", user);
   return (
      <Routes>
-      <Route index element={<LoginPage/>}/>
-  {/* <Route path = '/login' element={<LoginPage/>}/> */}
+      {/* <Route index element={<LoginPage/>}/> */}
+      <Route path = '/login' element={<LoginPage/>}/>
         <Route path="/register" element={<Register/>}/>
       <Route path='/' element={<Layout/>}>
         <Route element={<RequireAuth/>}>
-        <Route path='/home' element={<HomePage/>}/> 
+        <Route path='/' element={<HomePage/>}/> 
+        <Route path='/bylimit' element={<AllPostByLimitDB/>}/> 
         <Route path='/profile' element={<ProfilePage/>}/> 
         <Route path="/users" element={<UserList/>}/>
         {/* <Route path="/users/:userId" element={<UserPageDB/>}/> */}
         <Route path="/users/:userId" element={<UserPageDB/>}/>
+
+
+        <Route path="post">
+          <Route index element={<AddPostsDB/>}/>
+          {/* <Route path=":postId" element={<SinglePost/>}/> */}
+          <Route path="edit/:postId" element={<EditPostDB/>}/>
+          <Route path="delete/:postId" element={<DeletePostDB/>}/>
+         </Route>
+
+ <Route path='users'>
+       {/* <Route index element = {<UsersList/>}/> */}
+       {/* <Route path=':userId' element = {<UserPage/>}/> */}
+       {/* <Route  element = {<UserPage/>}/> */}
+    </Route>
+         
        </Route>
          {/* <Route index element={<PostList/>}/> */}
 
-         <Route path="post">
-          <Route index element={<AddPostsDB/>}/>
-          {/* <Route path=":postId" element={<SinglePost/>}/> */}
-          {/* <Route path="edit/:postId" element={<EditPost/>}/> */}
-         </Route>
+         
 
        <Route path='users'>
        {/* <Route index element = {<UsersList/>}/> */}

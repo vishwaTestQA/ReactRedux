@@ -5,10 +5,12 @@ import { useSelector } from 'react-redux';
 
 const RequireAuth = () => {
     const token = useSelector(selectCurrentToken);
+    
     console.log("requireAuth", token)
   return (
     <div>{
         token ? <Outlet/> : <Navigate to = "/login" />
+        // <Outlet></Outlet>
     }</div>
   )
 }

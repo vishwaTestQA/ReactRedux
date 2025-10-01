@@ -1,7 +1,8 @@
 //all endpoints resides here to do necessary operation with users
 
 import { createEntityAdapter, createSelector } from "@reduxjs/toolkit"; 
-import { apiSliceForPost } from "../api/apiSliceForPost";
+// import { apiSliceForPost } from "../api/apiSliceForPost";
+import { apiAuthSlice } from "../api/auth/apiAuthSlice";
 
 const usersAdapter = createEntityAdapter({
     // sortComparer: (a, b) => a.username.localeCompare(b.username),
@@ -10,7 +11,7 @@ const usersAdapter = createEntityAdapter({
 
 const initialState = usersAdapter.getInitialState();
 
-export const extendedApiSliceDB = apiSliceForPost.injectEndpoints({
+export const extendedApiSliceDB = apiAuthSlice.injectEndpoints({
     endpoints: builder => ({
         getAllUsers: builder.query({
             query: () => '/users',
@@ -20,7 +21,7 @@ export const extendedApiSliceDB = apiSliceForPost.injectEndpoints({
                 // const normalizedData = userData.map(user => ({ 
                 //      ...user, id: user._id}
                 //     ));
-                // console.log("userdata", userData)
+                console.log("userdata", response)
                 return usersAdapter.setAll(initialState, response.users);
             },
            // don’t really need providesTags for getAllUsers 
@@ -37,6 +38,7 @@ export const extendedApiSliceDB = apiSliceForPost.injectEndpoints({
                 ...result.ids.map(id => ({ type: 'User', id }))
         ]
         }),
+
          updateProfilePicture: builder.mutation({
             query: ({userId, profilePicture}) => ({
                url: 'post/profilePicture',

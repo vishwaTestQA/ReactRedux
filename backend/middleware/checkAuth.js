@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken';
 export const checkAuth = async (req, res, next) => {
+    console.log('req', req.header)
     // const token = req.cookie.jwt; // when the access token is sent through cookies then we can use like this
-    const authHeader =  req.header.authorization || req.header.Authorization; // when the access token is sent through headers then we can use like this
+    const authHeader =  req.headers.authorization || req.headers.Authorization; // when the access token is sent through headers then we can use like this
+console.log('auth in server', authHeader );
     if(!authHeader || !authHeader.startsWith('Bearer ')) {
         return res.status(401).json({ message: 'Unauthorized' });
     }
@@ -16,9 +18,9 @@ export const checkAuth = async (req, res, next) => {
             if(err){
                 return res.status(403).json({ message: 'Forbidden' });
             }
-
-            req.user = decoded.user.username; // Attach the username to the request object
-            req.roles = decoded.user.roles; // Attach the user ID to the request object
+            // console.log("req.user", req.user, "REQ.ROLES", req.roles)
+            // req.user = decoded.user.username; // Attach the username to the request object
+            // req.roles = decoded.user.roles; // Attach the user ID to the request object
             next();
         });
     } catch (error) {

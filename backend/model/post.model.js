@@ -17,9 +17,9 @@ const postSchema = new mongoose.Schema({
         required: true  // Reference to the Author model
         },
     image: {
-  url: { type: String, default: null },
-  public_id: { type: String, default: null }
-}
+        url: { type: String, default: null },
+        public_id: { type: String, default: null }
+    }
 
     // username:{
     //         type: String,
@@ -27,7 +27,7 @@ const postSchema = new mongoose.Schema({
     //     }
     // reactions:[{
     //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'Reaction',
+    //    Comm ref: 'Reaction',
     //     default: undefined,
     // }]
 }, {
@@ -45,6 +45,13 @@ postSchema.virtual('reactions', {
     localField: 'authorId',           //connect reactionSchema to author schema with its id
     foreignField: '_id',                // then can access 
   })
+
+  postSchema.virtual('comments', {
+    ref: 'Comment',
+    localField: '_id',      //In post model each posts generates an _id so its a local field for post model
+    foreignField: 'postId'  // when creating each comment we setting postId, so postId is exist in comment model
+  })                         // using this we connecting both collections
+
 
 //   postSchema.virtual('authors', {
 //     ref: 'Author',

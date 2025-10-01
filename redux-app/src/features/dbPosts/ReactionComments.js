@@ -55,10 +55,10 @@ const ReactionComments = ({ reactions }) => {
   console.log("sorted", sortedReactBasedOnCount)
   return (
     <div role="button" onClick={handleReact}>
-    <span> {
-        Object.entries(sortedReactBasedOnCount).map(([k, v]) => emojis[k])
-      }</span>
-      <span style={{marginLeft:"10px"}}>{totalReactCount > 0 ? totalReactCount: null}</span>
+    {
+        Object.entries(sortedReactBasedOnCount).map(([k, v]) => <span onClick={handleReact}>{emojis[k]}</span>)
+      }
+      <span onClick={handleReact} style={{marginLeft:"10px"}}>{totalReactCount > 0 ? totalReactCount: null}</span>
       {reactCount === true ?
         <div className={'reaction-modal'}>
           <div className={'reaction-group'} style={{ display: "flex", flexDirection: "row", width: "100px" }}>

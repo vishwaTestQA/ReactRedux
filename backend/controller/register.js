@@ -34,10 +34,11 @@ const register = async (req, res) => {
         password: hashedPassword,
         profilePicture: req.body.profilePicture || 'defaultProfilePic.jpg', // Optional profile picture
         bio: req.body.bio || '', // Optional bio
+        roles: req.body.roles
     });
 
     try {
-            console.log("validating username", newAuthor.validateUsername()); // This will log true if the username is valid   
+        console.log("validating username", newAuthor.validateUsername()); // This will log true if the username is valid   
        // this method is defined in the author.model.js file
 
          // create a JWT token for the user

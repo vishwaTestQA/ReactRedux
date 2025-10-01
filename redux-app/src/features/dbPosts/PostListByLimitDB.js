@@ -30,7 +30,7 @@ const PostListDB = ({ post }) => {
   // const allPost = useSelector(selectAllPosts); // it selects the posts from cache
 
   //eg: 10 post so 10 postId
-  const renderPost = post?.map((post) => (
+  const renderPost = post.map((post) => (
     <div style={{
       marginBottom: "20px", padding: "10px",
       background: "rgb(230, 226, 226)", boxShadow: "0 0 2px 1px rgb(0, 0, 0.4)", borderRadius: "10px"
@@ -43,7 +43,7 @@ const PostListDB = ({ post }) => {
               style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
               <div style={{ width: '50px', height: '50px', borderRadius: '50%' }}>
                 <img
-                  src={post?.authors[0]?.profilePicture?.url || emptyImage} alt={post.authors[0].username}
+                  src={post.authors[0]?.profilePicture?.url || emptyImage} alt={post.authors.username}
                   style={{ width: '50px', height: '50px', borderRadius: '50%' }}
                 />
               </div>

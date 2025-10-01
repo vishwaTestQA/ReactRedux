@@ -1,18 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // import PostList from './PostList';
-import { useAddNewPostMutation } from './postSliceDB';
+import { selectPostById, useAddNewPostMutation, useUpdatePostMutation } from './postSliceDB';
 import { selectAllUsers } from '../dbUsers/usersSliceDB';
 import { selectCurrentId, selectCurrentRoles } from '../api/auth/authSlice';
 import { LucidePictureInPicture, LucidePictureInPicture2, PictureInPicture2Icon } from 'lucide-react';
 import { useCompression } from '../../hook/useCompresion';
 
-const AddPostsDB = () => {
-
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+const EditPostDB = () => {
+    const {postId} = useParams();
+    const post = useSelector(state => selectPostById(state, postId))
+    console.log("params", postId, "  ", post)
+  const [title, setTitle] = useState(post.title);
+  const [content, setContent] = useState(post.content);
   // const [authorId, setAuthorId] = useState('');
 
   const onContentChanged = (e) => setContent(e.target.value);
@@ -20,11 +22,11 @@ const AddPostsDB = () => {
   // const onAuthorIdChanged = (e)=> setAuthorId(e.target.value);
 
   // const dispatch = useDispatch();
-  const [addNewPost, {isLoading}] = useAddNewPostMutation();
+  const [updatePost, {isLoading}] = useUpdatePostMutation();
   const navigate = useNavigate();
 
-  const userId = useSelector(selectCurrentId);
-  console.log("id", userId)
+//   const userId = useSelector(selectCurrentId);
+//   console.log("id", userId)
   const  { compressedImage, loading, error, compressImage } = useCompression();
   const inputRef = useRef(null);
 
@@ -51,41 +53,34 @@ const AddPostsDB = () => {
      useEffect(() => {
          if(selectedImage){
            console.log("if")
-             const res = [title, userId, content, compressedImage].every(Boolean) && !isLoading;
+             const res = [title, content, compressedImage].every(Boolean) && !isLoading;
              setSave(res)
              console.log("if", save)
          }else{
             console.log("else")
-            const res =  [title, userId, content].every(Boolean) && !isLoading;
+            const res =  [title, content].every(Boolean) && !isLoading;
              setSave(res)
             console.log("else", save)
          }
-     },[title,userId,content, compressedImage, selectedImage, save])
+     },[title,content, compressedImage, selectedImage, save])
 
      console.log("loading....", loading);
-
-  
 
   const handleSubmit = async (e) =>{
     e.preventDefault();
     if(save){
       try{
-          // dispatch(addNewPost({title, body: content, author})).unwrap();
-        addNewPost({title, content, image: compressedImage, userId}).unwrap();
-        console.log("after adding post", {title, content, image: compressedImage, userId})
+        updatePost({title, content, image: compressedImage, id:postId}).unwrap();
+        console.log("after adding post", {title, content, image: compressedImage})
         setSelectedImage(null)
         navigate('/');
-        console.log(title, userId, content)
+        console.log(title, content)
       }catch(error){
         console.log(error.message)
       }
     }
   }
 
-  // const userOptions = users.flat().map(user=>{
-  //   return <option key={user.id} value={user.id}>{user.name}</option>
-  // })
- 
   return (
      <div>
       <form onSubmit={handleSubmit} style={{display: 'flex', flexDirection: 'column',  gap:"20px"}}>
@@ -118,6 +113,7 @@ const AddPostsDB = () => {
                  style={{width:"100%"}}
                  />
                  </div>
+                 {post.image?.url ? <img style={{width:'50px', height:"50px"}} src={post.image.url}></img> : null}
                  <div style={{width:"100%", height:"50px" ,border:"solid", borderRadius:"10px", textAlign: 'center', display:'flex', justifyContent: 'space-around', alignItems:'center'}}>
                   {/* <label htmlFor='upload'>upload image</label> */}
                   <label htmlFor='upload'>
@@ -129,10 +125,8 @@ const AddPostsDB = () => {
                  {loading ? <div>uploading ...</div>  : null}
                  <button disabled={!save}>submit</button>
       </form>
-     {/* <PostList/>    */}
-     {/* displays all the posts in the same page */}
      </div>
   )
 }
 
-export default AddPostsDB
+export default EditPostDB
